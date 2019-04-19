@@ -1,10 +1,10 @@
-package newsclient
+package client_service
 
 import (
 	"errors"
 	"testing"
 
-	pb "github.com/matrosov-nikita/newsapp/newsclient/proto"
+	pb "github.com/matrosov-nikita/newsapp/client-service/proto"
 	"github.com/stretchr/testify/suite"
 )
 

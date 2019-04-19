@@ -7,18 +7,18 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/matrosov-nikita/newsapp/newsclient"
+	"github.com/matrosov-nikita/newsapp/client-service"
 )
 
 // ErrInvalidRequestBody happens when request body can not be decoded from JSON.
 var ErrInvalidRequestBody = errors.New("could not decode request body")
 
 type Handler struct {
-	c      *newsclient.NewsClient
+	c      *client_service.NewsClient
 	router *mux.Router
 }
 
-func NewHandler(c *newsclient.NewsClient) *Handler {
+func NewHandler(c *client_service.NewsClient) *Handler {
 	return &Handler{
 		c: c,
 	}
@@ -73,8 +73,8 @@ func (h Handler) GetById(w http.ResponseWriter, r *http.Request) {
 
 	news, err := h.c.FindById(id)
 	if err != nil {
-		if err == newsclient.ErrNewsNotFound {
-			http.Error(w, newsclient.ErrNewsNotFound.Error(), http.StatusNotFound)
+		if err == client_service.ErrNewsNotFound {
+			http.Error(w, client_service.ErrNewsNotFound.Error(), http.StatusNotFound)
 			return
 		}
 

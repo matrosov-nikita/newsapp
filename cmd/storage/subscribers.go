@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/matrosov-nikita/newsapp/storage"
+	"github.com/matrosov-nikita/newsapp/storage-service"
 
 	"github.com/golang/protobuf/proto"
-	pb "github.com/matrosov-nikita/newsapp/storage/proto"
+	pb "github.com/matrosov-nikita/newsapp/storage-service/proto"
 	"github.com/nats-io/go-nats"
 )
 
 type Subs struct {
-	st   *storage.StorageService
+	st   *storage_service.StorageService
 	conn *nats.Conn
 }
 
-func NewSubs(st *storage.StorageService, conn *nats.Conn) *Subs {
+func NewSubs(st *storage_service.StorageService, conn *nats.Conn) *Subs {
 	return &Subs{
 		conn: conn,
 		st:   st,
@@ -24,7 +24,6 @@ func NewSubs(st *storage.StorageService, conn *nats.Conn) *Subs {
 }
 
 func (s *Subs) CreateNews(m *nats.Msg) {
-	log.Println("THERE")
 	var news pb.News
 
 	err := proto.Unmarshal(m.Data, &news)

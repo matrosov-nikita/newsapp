@@ -8,21 +8,22 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/matrosov-nikita/newsapp/newsclient/nats"
+	"github.com/matrosov-nikita/newsapp/client-service/nats"
 
-	"github.com/matrosov-nikita/newsapp/newsclient"
+	"github.com/matrosov-nikita/newsapp/client-service"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
+	log.Println(natsURL)
 	natsClient, err := nats.New(natsURL)
 	if err != nil {
 		log.Fatalf("could not connect to NATS broker: %v", err)
 	}
 
-	client := newsclient.New(natsClient)
+	client := client_service.New(natsClient)
 	r := mux.NewRouter()
 	h := NewHandler(client)
 	h.Attach(r)

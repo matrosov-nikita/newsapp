@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+  natsmq:
+    image: nats:latest
+    ports:
+      - 4222:4222
+      - 8222:8222
+      - 6222:6222

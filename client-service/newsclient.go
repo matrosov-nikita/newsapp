@@ -1,11 +1,11 @@
-package newsclient
+package client_service
 
 import (
 	"errors"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	pb "github.com/matrosov-nikita/newsapp/newsclient/proto"
+	pb "github.com/matrosov-nikita/newsapp/client-service/proto"
 )
 
 var ErrNewsNotFound = errors.New("news not found")

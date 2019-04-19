@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/matrosov-nikita/newsapp/storage"
-	"github.com/matrosov-nikita/newsapp/storage/mongostorage"
+	"github.com/matrosov-nikita/newsapp/storage-service"
+	"github.com/matrosov-nikita/newsapp/storage-service/mongostorage"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,12 +18,15 @@ import (
 
 func main() {
 	natsURL := getEnv("NATS_URL", nats.DefaultURL)
+	log.Println(natsURL)
+
 	natsConnection, err := nats.Connect(natsURL)
 	if err != nil {
 		log.Fatalf("could not connect to NATS broker: %v", err)
 	}
 
 	mongoDSN := getEnv("MONGO_DSN", "mongodb://localhost:27017")
+	log.Println(mongoDSN)
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoDSN))
@@ -32,7 +35,7 @@ func main() {
 	}
 
 	newsStorage := mongostorage.CreateNewsRepository(client)
-	st := storage.NewStorageService(newsStorage)
+	st := storage_service.NewStorageService(newsStorage)
 	subs := NewSubs(st, natsConnection)
 	_, _ = natsConnection.Subscribe("news.create", subs.CreateNews)
 	_, _ = natsConnection.Subscribe("news.get", subs.FindNews)

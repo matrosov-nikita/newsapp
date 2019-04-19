@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  client:
+    build:
+      context: ./
+      dockerfile: Dockerfile.client
+    container_name: client-service
+    environment:
+      - NATS_URL=nats://natsmq:4222
+    ports:
+      - 8888:8888
+  storage:
+    build:
+      context: ./
+      dockerfile: Dockerfile.storage
+    container_name: storage-service
+    environment:
+      - NATS_URL=nats://natsmq:4222
+      - MONGO_DSN=mongodb://mongo:27017

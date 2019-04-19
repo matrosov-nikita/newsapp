@@ -1,9 +1,9 @@
-package storage
+package storage_service
 
 import (
 	"errors"
 
-	pb "github.com/matrosov-nikita/newsapp/storage/proto"
+	pb "github.com/matrosov-nikita/newsapp/storage-service/proto"
 )
 
 var ErrNewsNotFound = errors.New("news not found")

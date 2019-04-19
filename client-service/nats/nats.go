@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	pb "github.com/matrosov-nikita/newsapp/newsclient/proto"
+	pb "github.com/matrosov-nikita/newsapp/client-service/proto"
 	"github.com/nats-io/go-nats"
 )
 

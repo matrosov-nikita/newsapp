@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/matrosov-nikita/newsapp/storage"
+	"github.com/matrosov-nikita/newsapp/storage-service"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/golang/protobuf/ptypes"
-	pb "github.com/matrosov-nikita/newsapp/storage/proto"
+	pb "github.com/matrosov-nikita/newsapp/storage-service/proto"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -64,7 +64,7 @@ func (repo *NewsRepository) FindByID(id string) (*pb.News, error) {
 	var doc NewsMongoDocument
 	if err := repo.c.FindOne(ctx, bson.M{"_id": objectId}).Decode(&doc); err != nil {
 		if err == mongo.ErrNoDocuments {
-			return nil, storage.ErrNewsNotFound
+			return nil, storage_service.ErrNewsNotFound
 		}
 
 		return nil, err
