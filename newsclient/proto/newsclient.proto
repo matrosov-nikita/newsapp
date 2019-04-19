@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package newsclient;
+
+import "google/protobuf/timestamp.proto";
+
+message News {
+    string id = 1;
+    string header = 2;
+    google.protobuf.Timestamp createdAt = 3;
+}
+
+message CreateResponse {
+    string Id  = 1;
+    int32 ErrorCode = 2;
+    string Error = 3;
+}
+
+message FindRequest {
+    string Id = 1;
+}
+
+message FindResponse {
+    News news = 1;
+    int32 ErrorCode = 2;
+    string Error = 3;
+}
