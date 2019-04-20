@@ -16,6 +16,8 @@ $ docker-compose -f docker-compose.services.yml up -d
 
 ## API
 
+By default server is running on http://localhost:8888
+
 #### POST /news
 
 Creates news. 
