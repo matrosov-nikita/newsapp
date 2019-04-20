@@ -11,7 +11,7 @@ var ErrNewsNotFound = errors.New("news not found")
 
 type NewsStorage interface {
 	Save(news *pb.News) (string, error)
-	FindByID(id string) (*pb.News, error)
+	FindByID(id *pb.FindRequest) (*pb.News, error)
 }
 
 // StorageService represents service for storing news.
@@ -38,8 +38,8 @@ func (s *StorageService) Create(news *pb.News) (*pb.CreateResponse, error) {
 }
 
 // FindById finds new in storage by given id.
-func (s *StorageService) FindById(id string) (*pb.FindResponse, error) {
-	news, err := s.storage.FindByID(id)
+func (s *StorageService) FindById(data *pb.FindRequest) (*pb.FindResponse, error) {
+	news, err := s.storage.FindByID(data)
 	if err != nil {
 		if err == ErrNewsNotFound {
 			return &pb.FindResponse{

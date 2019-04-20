@@ -60,10 +60,8 @@ func (c *NatsClient) Create(data *pb.News) (*pb.CreateResponse, error) {
 }
 
 // Find sends request to find news by id to MQ and waiting for response.
-func (c *NatsClient) Find(id string) (*pb.FindResponse, error) {
-	bs, err := proto.Marshal(&pb.FindRequest{
-		Id: id,
-	})
+func (c *NatsClient) Find(data *pb.FindRequest) (*pb.FindResponse, error) {
+	bs, err := proto.Marshal(data)
 	if err != nil {
 		return nil, err
 	}

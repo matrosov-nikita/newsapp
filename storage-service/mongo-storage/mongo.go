@@ -1,4 +1,4 @@
-package mongostorage
+package mongo_storage
 
 import (
 	"context"
@@ -61,11 +61,11 @@ func (repo *NewsRepository) Save(news *pb.News) (string, error) {
 }
 
 // FindByID finds news by id and returns error if not found.
-func (repo *NewsRepository) FindByID(id string) (*pb.News, error) {
+func (repo *NewsRepository) FindByID(data *pb.FindRequest) (*pb.News, error) {
 	ctx := context.Background()
-	objectId, err := primitive.ObjectIDFromHex(id)
+	objectId, err := primitive.ObjectIDFromHex(data.Id)
 	if err != nil {
-		return nil, fmt.Errorf("incorrect id: %s", id)
+		return nil, fmt.Errorf("incorrect id: %s", data.Id)
 	}
 
 	var doc NewsMongoDocument

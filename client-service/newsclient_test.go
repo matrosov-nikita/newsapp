@@ -82,7 +82,7 @@ func (r *SpyMQSender) ConfigureResponse(code int32, error string) {
 	r.error = error
 }
 
-func (r *SpyMQSender) Find(id string) (*pb.FindResponse, error) {
+func (r *SpyMQSender) Find(data *pb.FindRequest) (*pb.FindResponse, error) {
 	if r.returnErrors {
 		return nil, errors.New("message queue error")
 	}

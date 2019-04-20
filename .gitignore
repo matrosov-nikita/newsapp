@@ -1,2 +1,5 @@
-bin/
-!bin/.gitkeep
+client-service/bin/*
+!client-service/bin/.gitkeep
+
+storage-service/bin/*
+!storage-service/bin/.gitkeep

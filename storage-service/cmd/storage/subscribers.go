@@ -55,7 +55,7 @@ func (s *Subs) FindNews(m *nats.Msg) {
 		return
 	}
 
-	resp, err := s.st.FindById(reqID.Id)
+	resp, err := s.st.FindById(&reqID)
 	if err != nil {
 		fail(s.conn, m, 1, fmt.Sprintf("cannot find news: %v", err))
 		return

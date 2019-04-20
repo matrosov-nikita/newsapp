@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gorilla/mux"
 	"github.com/matrosov-nikita/newsapp/client-service"
@@ -74,7 +75,7 @@ func (h Handler) GetById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	id := mux.Vars(r)["id"]
 
-	if !h.isValidID(id) {
+	if !h.isValidMongoID(id) {
 		h.Error(w, ErrInvalidId)
 		return
 	}
@@ -103,29 +104,27 @@ func (h Handler) GetById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) Error(w http.ResponseWriter, e error) {
-	err := customError{Error: e.Error()}
+	var statusCode int
+	errorStr := e.Error()
 	switch e {
 	case ErrInvalidRequestBody, ErrInvalidId:
-		err.statusCode = http.StatusBadRequest
+		statusCode = http.StatusBadRequest
 	case client_service.ErrNewsNotFound:
-		err.statusCode = http.StatusNotFound
+		statusCode = http.StatusNotFound
 	default:
 		log.Println(e)
-		err.statusCode = http.StatusInternalServerError
-		err.Error = "Internal Server Error"
+		statusCode = http.StatusInternalServerError
+		errorStr = "Internal Server Error"
 	}
 
-	bs, _ := json.Marshal(err)
-	w.WriteHeader(err.statusCode)
+	bs, _ := json.Marshal(map[string]string{
+		"error": errorStr,
+	})
+	w.WriteHeader(statusCode)
 	w.Write(bs)
 }
 
-type customError struct {
-	Error      string `json:"error"`
-	statusCode int    `json:"-"`
-}
-
-func (h *Handler) isValidID(id string) bool {
-	r := regexp.MustCompile("^[0-9a-fA-F]{24}$")
-	return r.MatchString(id)
+func (h *Handler) isValidMongoID(id string) bool {
+	_, err := primitive.ObjectIDFromHex(id)
+	return err == nil
 }

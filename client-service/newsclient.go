@@ -13,7 +13,7 @@ var ErrNewsNotFound = errors.New("news not found")
 
 type MQSender interface {
 	Create(data *pb.News) (*pb.CreateResponse, error)
-	Find(id string) (*pb.FindResponse, error)
+	Find(data *pb.FindRequest) (*pb.FindResponse, error)
 }
 
 // NewsClient represents client service.
@@ -51,7 +51,9 @@ type ResponseNews struct {
 
 // FindById finds news by given id.
 func (c *NewsClient) FindById(id string) (*ResponseNews, error) {
-	resp, err := c.mq.Find(id)
+	resp, err := c.mq.Find(&pb.FindRequest{
+		Id:id,
+	})
 
 	if err != nil {
 		return nil, err
