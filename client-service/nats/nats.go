@@ -17,10 +17,12 @@ const (
 	TimeoutMessageReceive = time.Second
 )
 
+// NatsClient represents NATS broker.
 type NatsClient struct {
 	conn *nats.Conn
 }
 
+// New creates a news NATS broker client running on given address.
 func New(natsURL string) (*NatsClient, error) {
 	conn, err := nats.Connect(natsURL)
 	if err != nil {
@@ -32,10 +34,12 @@ func New(natsURL string) (*NatsClient, error) {
 	}, nil
 }
 
+// Close closes NATS client.
 func (c *NatsClient) Close() {
 	c.conn.Close()
 }
 
+// Create sends request to create news to MQ and waiting for response.
 func (c *NatsClient) Create(data *pb.News) (*pb.CreateResponse, error) {
 	bs, err := proto.Marshal(data)
 	if err != nil {
@@ -55,6 +59,7 @@ func (c *NatsClient) Create(data *pb.News) (*pb.CreateResponse, error) {
 	return &resp, nil
 }
 
+// Find sends request to find news by id to MQ and waiting for response.
 func (c *NatsClient) Find(id string) (*pb.FindResponse, error) {
 	bs, err := proto.Marshal(&pb.FindRequest{
 		Id: id,

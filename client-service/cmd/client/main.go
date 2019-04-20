@@ -17,7 +17,6 @@ import (
 
 func main() {
 	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
-	log.Println(natsURL)
 	natsClient, err := nats.New(natsURL)
 	if err != nil {
 		log.Fatalf("could not connect to NATS broker: %v", err)

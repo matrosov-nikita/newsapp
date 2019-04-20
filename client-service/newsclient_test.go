@@ -4,6 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/golang/protobuf/ptypes"
+
 	pb "github.com/matrosov-nikita/newsapp/client-service/proto"
 	"github.com/stretchr/testify/suite"
 )
@@ -32,10 +34,35 @@ func (s *ClientSuite) TestMQRequestCalledWithCorrectData() {
 	s.Equal("header", s.mq.bodyData.Header)
 }
 
-func (s *ClientSuite) TestErrorCodeGraterThanZero() {
+func (s *ClientSuite) TestErrorCodeGraterThanZeroWhenCreate() {
 	s.mq.ConfigureResponse(1, "some error")
 	_, err := s.client.CreateNews("header")
 	s.Equal(errors.New("some error"), err)
+}
+
+func (s *ClientSuite) TestMQFindRequestFails() {
+	s.mq.ReturnErrors(true)
+	_, err := s.client.FindById("id")
+	s.NotNil(err)
+}
+
+func (s *ClientSuite) TestErrorCodeGraterThanZeroWhenFind() {
+	s.mq.ConfigureResponse(1, "some error")
+	_, err := s.client.FindById("id")
+	s.Equal(errors.New("some error"), err)
+}
+
+func (s *ClientSuite) TestNotFoundError() {
+	s.mq.ConfigureResponse(2, "news not found")
+	_, err := s.client.FindById("id")
+	s.Equal(ErrNewsNotFound, err)
+}
+
+func (s *ClientSuite) TestFindNewsReturnResponse() {
+	resp, err := s.client.FindById("id")
+	s.Nil(err)
+	s.Equal("123", resp.ID)
+	s.Equal("header", resp.Header)
 }
 
 func TestClientSuite(t *testing.T) {
@@ -56,7 +83,19 @@ func (r *SpyMQSender) ConfigureResponse(code int32, error string) {
 }
 
 func (r *SpyMQSender) Find(id string) (*pb.FindResponse, error) {
-	panic("implement me")
+	if r.returnErrors {
+		return nil, errors.New("message queue error")
+	}
+
+	return &pb.FindResponse{
+		News: &pb.News{
+			Id:        "123",
+			Header:    "header",
+			CreatedAt: ptypes.TimestampNow(),
+		},
+		ErrorCode: r.errorCode,
+		Error:     r.error,
+	}, nil
 }
 
 func (r *SpyMQSender) ReturnErrors(v bool) {

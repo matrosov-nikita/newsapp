@@ -15,17 +15,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// NewsMongoDocument represents how news entity stored in mongo collection.
 type NewsMongoDocument struct {
 	ID        primitive.ObjectID `bson:"_id"`
 	Header    string             `bson:"header"`
 	CreatedAt time.Time          `bson:"created_at"`
 }
 
+// NewsDocument creates new mongo document for news.
 func NewsDocument(news *pb.News) *NewsMongoDocument {
 	t, _ := ptypes.Timestamp(news.CreatedAt)
 	return &NewsMongoDocument{ID: primitive.NewObjectID(), Header: news.Header, CreatedAt: t}
 }
 
+// ToNews converts mongo document to news.
 func (d *NewsMongoDocument) ToNews() *pb.News {
 	createdAt, _ := ptypes.TimestampProto(d.CreatedAt)
 	return &pb.News{
@@ -35,16 +38,19 @@ func (d *NewsMongoDocument) ToNews() *pb.News {
 	}
 }
 
+// NewsRepository represents mongo repo for news.
 type NewsRepository struct {
 	c *mongo.Collection
 }
 
+// CreateNewsRepository creates new mongo repo for news.
 func CreateNewsRepository(client *mongo.Client) *NewsRepository {
 	return &NewsRepository{
 		c: client.Database("newsdb").Collection("news"),
 	}
 }
 
+// Save inserts news and return inserted id.
 func (repo *NewsRepository) Save(news *pb.News) (string, error) {
 	doc := NewsDocument(news)
 	_, err := repo.c.InsertOne(context.Background(), doc)
@@ -54,6 +60,7 @@ func (repo *NewsRepository) Save(news *pb.News) (string, error) {
 	return doc.ID.Hex(), nil
 }
 
+// FindByID finds news by id and returns error if not found.
 func (repo *NewsRepository) FindByID(id string) (*pb.News, error) {
 	ctx := context.Background()
 	objectId, err := primitive.ObjectIDFromHex(id)

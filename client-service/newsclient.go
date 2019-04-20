@@ -8,6 +8,7 @@ import (
 	pb "github.com/matrosov-nikita/newsapp/client-service/proto"
 )
 
+// ErrNewsNotFound happens when news can not be find by id.
 var ErrNewsNotFound = errors.New("news not found")
 
 type MQSender interface {
@@ -15,6 +16,7 @@ type MQSender interface {
 	Find(id string) (*pb.FindResponse, error)
 }
 
+// NewsClient represents client service.
 type NewsClient struct {
 	mq MQSender
 }
@@ -23,6 +25,7 @@ func New(m MQSender) *NewsClient {
 	return &NewsClient{mq: m}
 }
 
+// CreateNews creates news by given header.
 func (c *NewsClient) CreateNews(header string) (string, error) {
 	resp, err := c.mq.Create(&pb.News{
 		Header:    header,
@@ -46,6 +49,7 @@ type ResponseNews struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+// FindById finds news by given id.
 func (c *NewsClient) FindById(id string) (*ResponseNews, error) {
 	resp, err := c.mq.Find(id)
 
