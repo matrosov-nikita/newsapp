@@ -46,6 +46,6 @@ Response:
 {
     "id": "5cbad50a9871a8d0f6390b2b",
     "header": "test news",
-    "created_at": "2019-04-20T08:15:06.653Z"
+    "createdAt": "2019-04-20T08:15:06.653Z"
 }
 ```
