@@ -46,13 +46,13 @@ func (c *NewsClient) CreateNews(header string) (string, error) {
 type ResponseNews struct {
 	ID        string    `json:"id"`
 	Header    string    `json:"header"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // FindById finds news by given id.
 func (c *NewsClient) FindById(id string) (*ResponseNews, error) {
 	resp, err := c.mq.Find(&pb.FindRequest{
-		Id:id,
+		Id: id,
 	})
 
 	if err != nil {
